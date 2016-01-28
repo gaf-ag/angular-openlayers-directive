@@ -12,10 +12,10 @@
   ],
   "dependencies": {
     "angular": "*",
-    "angular-sanitize": "*",
-    "openlayers3": "https://github.com/tombatossals/ol3-compiled.git#3.8.2"
+    "angular-sanitize": "*"
   },
   "devDependencies": {
+    "openlayers3": "https://github.com/tombatossals/ol3-compiled.git#3.8.2",
     "jquery": "*",
     "angular-route": "*",
     "angular-mocks": "*"

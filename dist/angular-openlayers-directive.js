@@ -1367,6 +1367,7 @@ angular.module('openlayers-directive').factory('olHelpers', ["$q", "$log", "$htt
 
     var createSource = function(source, projection) {
         var oSource;
+        var geojsonFormat = new ol.format.GeoJSON(); // used in various switch stmnts below
 
         switch (source.type) {
             case 'MapBox':
@@ -1540,7 +1541,6 @@ angular.module('openlayers-directive').factory('olHelpers', ["$q", "$log", "$htt
                         projectionToUse = source.geojson.projection;
                     }
 
-                    var geojsonFormat = new ol.format.GeoJSON();
                     var features = geojsonFormat.readFeatures(
                         source.geojson.object, { featureProjection: projectionToUse });
 
@@ -1555,17 +1555,20 @@ angular.module('openlayers-directive').factory('olHelpers', ["$q", "$log", "$htt
                 }
 
                 if (isDefined(source.url)) {
-                    oSource = new ol.source.Vector({
-                        format: new ol.format.GeoJSON(),
+                    oSource = new ol.source.ServerVector({
+                        format: geojsonFormat,
                         loader: function(/*extent, resolution, projection*/) {
                             var url = source.url +
                                       '&outputFormat=text/javascript&format_options=callback:JSON_CALLBACK';
-                            $http.jsonp(url, { cache: source.cache}).success(function(response) {
-                                oSource.addFeatures(oSource.readFeatures(response));
-                            }).error(function(response) {
-                                $log(response);
-                            });
-                        }
+                            $http.jsonp(url, { cache: source.cache})
+                                .success(function(response) {
+                                    oSource.addFeatures(geojsonFormat.readFeatures(response));
+                                })
+                                .error(function(response) {
+                                    $log(response);
+                                });
+                        },
+                        projection: projection
                     });
                 }
                 break;
