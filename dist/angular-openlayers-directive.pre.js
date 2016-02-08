@@ -1399,7 +1399,8 @@ angular.module('openlayers-directive').factory('olHelpers', function($q, $log, $
                     url: source.url,
                     attributions: createAttribution(source),
                     crossOrigin: (typeof source.crossOrigin === 'undefined') ? 'anonymous' : source.crossOrigin,
-                    params: source.params
+                    params: source.params,
+                    ratio: source.ratio
                 });
                 break;
 
@@ -1542,7 +1543,10 @@ angular.module('openlayers-directive').factory('olHelpers', function($q, $log, $
                     }
 
                     var features = geojsonFormat.readFeatures(
-                        source.geojson.object, { featureProjection: projectionToUse });
+                        source.geojson.object, {
+                            featureProjection: projectionToUse,
+                            dataProjection: projectionToUse
+                        });
 
                     oSource.addFeatures(features);
                 }
